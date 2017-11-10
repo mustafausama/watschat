@@ -1,14 +1,15 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});
+const PORT = process.env.PORT || 3000;
+const INDEX = path.join(__dirname, 'index.html');
 
-app.set('port', (process.env.PORT || 3000));
+const server = express()
+  .use((req, res) => res.sendFile(INDEX) )
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-var users = [];
+const io = socketIO(server);
 
 io.on('connection', function(socket){
   console.log('a user connected');
@@ -21,10 +22,4 @@ io.on('connection', function(socket){
   socket.on('disconnect', function() {
     console.log('a user disconnected');
   });
-});
-
-io.emit('some event', { for: 'everyone' });
-
-http.listen(app.get('port'), function(){
-  console.log('listening on *:3000');
 });
