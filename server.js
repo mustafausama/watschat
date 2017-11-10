@@ -6,6 +6,8 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
+app.set('port', (process.env.PORT || 3000));
+
 var users = [];
 
 io.on('connection', function(socket){
